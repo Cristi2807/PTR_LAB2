@@ -8,7 +8,7 @@ defmodule Reader do
   @impl true
   def init(url) do
     HTTPoison.get!(url, [], recv_timeout: :infinity, stream_to: self())
-    {:ok, nil}
+    {:ok, url}
   end
 
   @impl true
@@ -18,22 +18,25 @@ defmodule Reader do
   end
 
   @impl true
-  def handle_info(%HTTPoison.AsyncChunk{chunk: data}, state) do
-    [_, json] = Regex.run(~r/data: ({.+})\n\n$/, data)
-
-    case json |> Poison.decode() do
-      {:ok, result} ->
-        send(Printer, result)
-
-      {:error, _} ->
-        nil
-    end
-
-    {:noreply, state}
+  def handle_info(
+        %HTTPoison.AsyncChunk{chunk: "event: \"message\"\n\ndata: {\"message\": panic}\n\n"},
+        url
+      ) do
+    {:noreply, url}
   end
 
   @impl true
-  def handle_info(_, state) do
-    {:noreply, state}
+  def handle_info(%HTTPoison.AsyncChunk{chunk: data}, url) do
+    [_, json] = Regex.run(~r/data: ({.+})\n\n$/, data)
+    {:ok, result} = json |> Poison.decode()
+
+    send(Printer, result)
+
+    {:noreply, url}
+  end
+
+  @impl true
+  def handle_info(_, url) do
+    {:noreply, url}
   end
 end

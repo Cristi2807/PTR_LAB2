@@ -1,18 +1,23 @@
 defmodule Printer do
   use GenServer
 
-  def start_link(:ok) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link({min_time, max_time}) do
+    GenServer.start_link(__MODULE__, {min_time, max_time}, name: __MODULE__)
   end
 
   @impl true
-  def init(:ok) do
-    {:ok, nil}
+  def init({min_time, max_time}) do
+    {:ok, {min_time, max_time}}
   end
 
   @impl true
-  def handle_info(json, state) do
+  def handle_info(json, {min_time, max_time}) do
+    lambda = (max_time - min_time) / 2
+
+    (min_time + round(Statistics.Distributions.Poisson.rand(lambda)))
+    |> Process.sleep()
+
     IO.puts(json["message"]["tweet"]["text"])
-    {:noreply, state}
+    {:noreply, {min_time, max_time}}
   end
 end
