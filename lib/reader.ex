@@ -2,6 +2,7 @@ defmodule Reader do
   use GenServer
 
   def start_link(name, url) do
+    IO.puts("#{name} is starting")
     GenServer.start_link(__MODULE__, url, name: name)
   end
 
@@ -30,8 +31,7 @@ defmodule Reader do
     [_, json] = Regex.run(~r/data: ({.+})\n\n$/, data)
     {:ok, result} = json |> Poison.decode()
 
-    send(Printer, result)
-    send(HashtagPrinter, result)
+    send(LoadBalancer, result)
 
     {:noreply, url}
   end

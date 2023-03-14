@@ -8,7 +8,8 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      {Printer, {5, 50}},
+      {WorkerPool, :ok},
+      {LoadBalancer, 3},
       {HashtagPrinter, []},
       %{
         id: :reader1,

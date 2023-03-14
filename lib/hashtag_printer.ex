@@ -2,6 +2,7 @@ defmodule HashtagPrinter do
   use GenServer
 
   def start_link(state) do
+    IO.puts("Hashtag printer starting")
     {:ok, pid} = GenServer.start_link(__MODULE__, state, name: __MODULE__)
     Process.send_after(pid, :show, 5000)
 
