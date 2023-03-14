@@ -31,6 +31,7 @@ defmodule Reader do
     {:ok, result} = json |> Poison.decode()
 
     send(Printer, result)
+    send(HashtagPrinter, result)
 
     {:noreply, url}
   end

@@ -17,7 +17,7 @@ defmodule Printer do
     (min_time + round(Statistics.Distributions.Poisson.rand(lambda)))
     |> Process.sleep()
 
-    IO.puts(json["message"]["tweet"]["text"])
+    # IO.puts(json["message"]["tweet"]["text"])
     {:noreply, {min_time, max_time}}
   end
 end
