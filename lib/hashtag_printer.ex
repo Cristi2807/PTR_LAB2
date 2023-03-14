@@ -27,6 +27,10 @@ defmodule HashtagPrinter do
     {:noreply, []}
   end
 
+  def handle_info(:crash, state) do
+    {:noreply, state}
+  end
+
   def handle_info(json, state) do
     state =
       state ++

@@ -23,6 +23,7 @@ defmodule Reader do
         %HTTPoison.AsyncChunk{chunk: "event: \"message\"\n\ndata: {\"message\": panic}\n\n"},
         url
       ) do
+    send(LoadBalancer, :crash)
     {:noreply, url}
   end
 

@@ -12,13 +12,20 @@ defmodule Printer do
   end
 
   @impl true
+  def handle_info(:crash, {id, min_time, max_time}) do
+    IO.puts("#{id} received CRASH msg, GOING OFF")
+    exit(:crash)
+    {:noreply, {id, min_time, max_time}}
+  end
+
+  @impl true
   def handle_info(json, {id, min_time, max_time}) do
     lambda = (max_time - min_time) / 2
 
     (min_time + round(Statistics.Distributions.Poisson.rand(lambda)))
     |> Process.sleep()
 
-    IO.puts("#{id}: #{json["message"]["tweet"]["text"]}")
+    # IO.puts("#{id}: #{json["message"]["tweet"]["text"]}")
     {:noreply, {id, min_time, max_time}}
   end
 end
