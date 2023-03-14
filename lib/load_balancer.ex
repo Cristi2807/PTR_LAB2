@@ -8,15 +8,22 @@ defmodule LoadBalancer do
 
   @impl true
   def init(number) do
-    {:ok, {0, number}}
+    {:ok, number}
   end
 
   @impl true
-  def handle_info(message, {current, number}) do
+  def handle_info(message, number) do
+    text = message["message"]["tweet"]["text"]
+
+    current =
+      :crypto.hash(:sha256, text)
+      |> :binary.last()
+      |> rem(number)
+
     id = :"printer#{current + 1}"
     if Process.whereis(id) != nil, do: send(id, message)
 
     send(HashtagPrinter, message)
-    {:noreply, {rem(current + 1, number), number}}
+    {:noreply, number}
   end
 end
