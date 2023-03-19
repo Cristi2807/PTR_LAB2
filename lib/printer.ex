@@ -47,7 +47,8 @@ defmodule Printer do
       end)
       |> Enum.join(" ")
 
-    IO.puts("#{id}: #{formattedWords}")
+    # IO.puts("#{id}: #{formattedWords}")
+
     {:noreply, {id, min_time, max_time, bad_words_dict}}
   end
 end

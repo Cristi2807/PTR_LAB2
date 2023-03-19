@@ -12,14 +12,7 @@ defmodule WorkerPool do
         id: :printer1,
         start: {Printer, :start_link, [:printer1, 5, 50]}
       },
-      %{
-        id: :printer2,
-        start: {Printer, :start_link, [:printer2, 5, 50]}
-      },
-      %{
-        id: :printer3,
-        start: {Printer, :start_link, [:printer3, 5, 50]}
-      }
+      {WorkerManager, [500, 1, 20, 50]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

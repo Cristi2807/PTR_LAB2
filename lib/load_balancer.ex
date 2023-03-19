@@ -11,6 +11,10 @@ defmodule LoadBalancer do
     {:ok, number}
   end
 
+  def handle_info({:number, new_number}, _number) do
+    {:noreply, new_number}
+  end
+
   @impl true
   def handle_info(message, number) do
     text = message["message"]["tweet"]["text"]

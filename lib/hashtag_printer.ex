@@ -19,9 +19,9 @@ defmodule HashtagPrinter do
       |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
       |> Enum.max_by(fn {_k, v} -> v end)
 
-    IO.puts(
-      "In the last 5 seconds, the most popular hashtag was #{most_popular_hashtag} with #{occurences} occurences"
-    )
+    # IO.puts(
+    #   "In the last 5 seconds, the most popular hashtag was #{most_popular_hashtag} with #{occurences} occurences"
+    # )
 
     Process.send_after(self(), :show, 5000)
     {:noreply, []}
