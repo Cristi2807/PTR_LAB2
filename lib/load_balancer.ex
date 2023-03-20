@@ -18,14 +18,19 @@ defmodule LoadBalancer do
   @impl true
   def handle_info(message, number) do
     text = message["message"]["tweet"]["text"]
+    time = :os.timestamp() |> elem(0) |> div(1_000) |> to_string()
 
-    current =
-      :crypto.hash(:sha256, text)
-      |> :binary.last()
-      |> rem(number)
+    msg_id = :crypto.hash(:sha256, text <> time)
 
-    id = :"printer#{current + 1}"
-    if Process.whereis(id) != nil, do: send(id, message)
+    printer_id = :crypto.hash(:sha256, text <> time) |> :binary.last()
+
+    0..2
+    |> Enum.each(fn range ->
+      printer_id = rem(printer_id + range, number)
+
+      if Process.whereis(:"printer#{printer_id}") != nil,
+        do: send(:"printer#{printer_id}", {:msg, {msg_id, message}})
+    end)
 
     send(HashtagPrinter, message)
     {:noreply, number}

@@ -35,7 +35,7 @@ defmodule WorkerManager do
   def handle_info(:check, {delay, min_workers, max_workers, task_per_worker}) do
     {avg_tasks, nr_of_workers} = getData()
     send(LoadBalancer, {:number, nr_of_workers})
-    IO.puts(avg_tasks)
+    IO.puts("\e[36m#{avg_tasks} tasks/worker \e[0m")
 
     cond do
       nr_of_workers > max_workers ->
@@ -57,7 +57,8 @@ defmodule WorkerManager do
       avg_tasks < task_per_worker && nr_of_workers > min_workers ->
         Supervisor.terminate_child(WorkerPool, :"printer#{nr_of_workers}")
         Supervisor.delete_child(WorkerPool, :"printer#{nr_of_workers}")
-        IO.puts(":printer#{nr_of_workers} deleted by Worker Manager")
+
+        IO.puts("\e[36m :printer#{nr_of_workers} deleted by Worker Manager \e[0m")
 
       true ->
         nil

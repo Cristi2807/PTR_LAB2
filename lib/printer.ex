@@ -22,7 +22,7 @@ defmodule Printer do
   end
 
   @impl true
-  def handle_info(json, {id, min_time, max_time, bad_words_dict}) do
+  def handle_info({:msg, {msg_id, json}}, {id, min_time, max_time, bad_words_dict}) do
     lambda = (max_time - min_time) / 2
 
     (min_time + round(Statistics.Distributions.Poisson.rand(lambda)))
@@ -47,7 +47,15 @@ defmodule Printer do
       end)
       |> Enum.join(" ")
 
-    # IO.puts("#{id}: #{formattedWords}")
+    case OutputQueue.check_msg_id(msg_id) do
+      :ok ->
+        IO.puts("#{id}: #{formattedWords}")
+        nil
+
+      :err ->
+        IO.puts("\e[31m #{id}: Message ALREADY PRINTED! \e[0m")
+        nil
+    end
 
     {:noreply, {id, min_time, max_time, bad_words_dict}}
   end
