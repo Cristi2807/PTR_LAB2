@@ -22,6 +22,7 @@ defmodule MainSupervisor do
       },
       {LoadBalancer, 20},
       {Aggregator, %{}},
+      {UserEngRationer, %{}},
       {HashtagPrinter, []},
       %{
         id: :reader1,

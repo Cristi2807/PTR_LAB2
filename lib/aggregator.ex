@@ -25,10 +25,11 @@ defmodule Aggregator do
       |> Map.merge(%{key => value})
 
     state =
-      case map_size(merged_map) == 3 do
+      case map_size(merged_map) == 4 do
         true ->
           IO.puts(
-            "\e[38;5;196m Redactor: \e[0m #{merged_map[:redactor]} \e[38;5;46m Emotional Score: \e[0m #{merged_map[:sentiment_score]} \e[38;5;21m Eng Ratio: \e[0m #{merged_map[:eng_ratio]} \n"
+            "\e[38;5;196m Redactor: \e[0m #{merged_map[:redactor]} \e[38;5;46m Emotional Score: \e[0m #{merged_map[:sentiment_score]}
+             \e[38;5;21m Eng Ratio: \e[0m #{merged_map[:eng_ratio]} \e[38;5;100m Eng Ratio User: \e[0m #{merged_map[:eng_ratio_user]}\n"
           )
 
           Map.delete(state, id)

@@ -24,6 +24,13 @@ defmodule EngagementRationer do
 
     send(Aggregator, {:set, {msg_id, :eng_ratio, eng_ratio}})
 
+    send(
+      Aggregator,
+      {:set,
+       {msg_id, :eng_ratio_user,
+        UserEngRationer.count_avg(json["message"]["tweet"]["user"]["id"], eng_ratio)}}
+    )
+
     {:noreply, {id}}
   end
 end
