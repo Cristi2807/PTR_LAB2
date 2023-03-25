@@ -10,17 +10,17 @@ defmodule MainSupervisor do
     children = [
       %{
         id: :redactorPool,
-        start: {WorkerPool, :start_link, [Redactor, :redactor, 20, []]}
+        start: {WorkerPool, :start_link, [Redactor, :redactor, 5, []]}
       },
       %{
         id: :sentiment_scorerPool,
-        start: {WorkerPool, :start_link, [SentimentScorer, :sentiment_scorer, 20, []]}
+        start: {WorkerPool, :start_link, [SentimentScorer, :sentiment_scorer, 5, []]}
       },
       %{
         id: :engagement_rationerPool,
-        start: {WorkerPool, :start_link, [EngagementRationer, :engagement_rationer, 20, []]}
+        start: {WorkerPool, :start_link, [EngagementRationer, :engagement_rationer, 5, []]}
       },
-      {LoadBalancer, 20},
+      {LoadBalancer, 5},
       {Aggregator, %{}},
       {UserEngRationer, %{}},
       {HashtagPrinter, []},
