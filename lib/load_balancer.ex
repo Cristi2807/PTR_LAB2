@@ -22,14 +22,17 @@ defmodule LoadBalancer do
 
     msg_id = :crypto.hash(:sha256, text <> time)
 
-    printer_id = :crypto.hash(:sha256, text <> time) |> :binary.last()
+    worker_id = :crypto.hash(:sha256, text <> time) |> :binary.last() |> rem(number)
+    worker_id = worker_id + 1
 
-    0..2
-    |> Enum.each(fn range ->
-      printer_id = rem(printer_id + range, number)
-
-      if Process.whereis(:"printer#{printer_id}") != nil,
-        do: send(:"printer#{printer_id}", {:msg, {msg_id, message}})
+    [
+      "redactor",
+      "sentiment_scorer",
+      "engagement_rationer"
+    ]
+    |> Enum.each(fn id ->
+      if Process.whereis(:"#{id}#{worker_id}") != nil,
+        do: send(:"#{id}#{worker_id}", {:msg, {msg_id, message}})
     end)
 
     send(HashtagPrinter, message)
