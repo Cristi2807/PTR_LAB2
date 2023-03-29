@@ -22,6 +22,7 @@ defmodule MainSupervisor do
       },
       {LoadBalancer, 5},
       {Aggregator, %{}},
+      {Batcher, [[], 100, 1000]},
       {UserEngRationer, %{}},
       {HashtagPrinter, []},
       %{
