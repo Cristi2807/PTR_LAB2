@@ -13,9 +13,9 @@ defmodule EngagementRationer do
 
   @impl true
   def handle_info({:msg, {msg_id, json}}, {id}) do
-    favourites = json["message"]["tweet"]["retweeted_status"]["favorite_count"] || 0
-    retweets = json["message"]["tweet"]["retweeted_status"]["retweet_count"] || 0
-    followers = json["message"]["tweet"]["user"]["followers_count"]
+    favourites = json["favorite_count"]
+    retweets = json["retweet_count"]
+    followers = json["user"]["followers_count"]
 
     eng_ratio =
       if followers == 0,
@@ -26,9 +26,7 @@ defmodule EngagementRationer do
 
     send(
       Aggregator,
-      {:set,
-       {msg_id, :eng_ratio_user,
-        UserEngRationer.count_avg(json["message"]["tweet"]["user"]["id"], eng_ratio)}}
+      {:set, {msg_id, :eng_ratio_user, UserEngRationer.count_avg(json["user"]["id"], eng_ratio)}}
     )
 
     {:noreply, {id}}

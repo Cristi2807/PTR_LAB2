@@ -16,7 +16,7 @@ defmodule Redactor do
 
   @impl true
   def handle_info({:msg, {msg_id, json}}, {id, bad_words_dict}) do
-    words = String.split(json["message"]["tweet"]["text"], " ", trim: true)
+    words = String.split(json["text"], " ", trim: true)
 
     formattedWords =
       Enum.map(words, fn word ->

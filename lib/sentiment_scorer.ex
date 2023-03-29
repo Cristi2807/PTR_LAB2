@@ -24,7 +24,7 @@ defmodule SentimentScorer do
 
   @impl true
   def handle_info({:msg, {msg_id, json}}, {id, score_map}) do
-    words = String.split(json["message"]["tweet"]["text"], " ", trim: true)
+    words = String.split(json["text"], " ", trim: true)
 
     sum =
       words

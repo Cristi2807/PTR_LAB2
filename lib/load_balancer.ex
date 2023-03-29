@@ -11,13 +11,9 @@ defmodule LoadBalancer do
     {:ok, number}
   end
 
-  def handle_info({:number, new_number}, _number) do
-    {:noreply, new_number}
-  end
-
   @impl true
   def handle_info(message, number) do
-    text = message["message"]["tweet"]["text"]
+    text = message["text"]
     time = :os.timestamp() |> elem(0) |> div(1_000) |> to_string()
 
     msg_id = :crypto.hash(:sha256, text <> time)

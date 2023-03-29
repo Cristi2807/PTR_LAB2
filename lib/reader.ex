@@ -32,7 +32,7 @@ defmodule Reader do
     [_, json] = Regex.run(~r/data: ({.+})\n\n$/, data)
     {:ok, result} = json |> Poison.decode()
 
-    send(LoadBalancer, result)
+    send(RetweetChecker, result["message"]["tweet"])
 
     {:noreply, url}
   end

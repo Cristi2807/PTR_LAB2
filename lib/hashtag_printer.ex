@@ -34,7 +34,7 @@ defmodule HashtagPrinter do
   def handle_info(json, state) do
     state =
       state ++
-        (json["message"]["tweet"]["entities"]["hashtags"]
+        (json["entities"]["hashtags"]
          |> Enum.map(fn %{"text" => text} -> text end))
 
     {:noreply, state}
