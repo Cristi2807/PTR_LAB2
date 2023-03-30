@@ -12,19 +12,19 @@ defmodule MainSupervisor do
       {Aggregator, []},
       %{
         id: :redactorPool,
-        start: {WorkerPool, :start_link, [Redactor, :redactor, 5, []]}
+        start: {WorkerPool, :start_link, [Redactor, :redactor, 3, []]}
       },
       %{
         id: :sentiment_scorerPool,
-        start: {WorkerPool, :start_link, [SentimentScorer, :sentiment_scorer, 5, []]}
+        start: {WorkerPool, :start_link, [SentimentScorer, :sentiment_scorer, 3, []]}
       },
       %{
         id: :engagement_rationerPool,
-        start: {WorkerPool, :start_link, [EngagementRationer, :engagement_rationer, 5, []]}
+        start: {WorkerPool, :start_link, [EngagementRationer, :engagement_rationer, 3, []]}
       },
       {UserEngRationer, %{}},
       {HashtagPrinter, []},
-      {LoadBalancer, 5},
+      {LoadBalancer, 3},
       {RetweetChecker, []},
       %{
         id: :reader1,
