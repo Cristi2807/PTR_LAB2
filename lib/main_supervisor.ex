@@ -8,6 +8,8 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
+      {Batcher, [[], 10]},
+      {Aggregator, []},
       %{
         id: :redactorPool,
         start: {WorkerPool, :start_link, [Redactor, :redactor, 5, []]}
@@ -20,12 +22,10 @@ defmodule MainSupervisor do
         id: :engagement_rationerPool,
         start: {WorkerPool, :start_link, [EngagementRationer, :engagement_rationer, 5, []]}
       },
-      {LoadBalancer, 5},
-      {Aggregator, %{}},
-      {Batcher, [[], 100, 1000]},
-      {RetweetChecker, []},
       {UserEngRationer, %{}},
       {HashtagPrinter, []},
+      {LoadBalancer, 5},
+      {RetweetChecker, []},
       %{
         id: :reader1,
         start: {Reader, :start_link, [:reader1, "localhost:4000/tweets/1"]}
