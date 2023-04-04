@@ -27,7 +27,7 @@ defmodule Batcher do
     state =
       case length(state) > 0 do
         true ->
-          print_state(Enum.at(state, 0))
+          GenServer.call(Database, {:save, Enum.at(state, 0)})
           Enum.drop(state, 1)
 
         false ->
@@ -47,7 +47,7 @@ defmodule Batcher do
 
       false ->
         send(Aggregator, :start)
-        IO.puts("\e[38;5;46m Buffer size less than half Buffer_size. READY TO RECEIVE \e[0m")
+        # IO.puts("\e[38;5;46m Buffer size less than half Buffer_size. READY TO RECEIVE \e[0m")
     end
 
     {:noreply, {state, buffer_size}}
@@ -61,7 +61,8 @@ defmodule Batcher do
       true ->
         send(Aggregator, :stop)
         send(self(), :stop)
-        IO.puts("\e[38;5;196m Batcher Buffer FULL! STOP sent to Aggregator! \e[0m")
+
+      # IO.puts("\e[38;5;196m Batcher Buffer FULL! STOP sent to Aggregator! \e[0m")
 
       false ->
         nil

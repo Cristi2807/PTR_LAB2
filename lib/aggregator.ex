@@ -55,7 +55,7 @@ defmodule Aggregator do
       |> Map.merge(%{key => value})
 
     state =
-      case map_size(merged_map) == 4 do
+      case map_size(merged_map) == 5 do
         true ->
           Map.delete(state, id)
 
@@ -64,7 +64,7 @@ defmodule Aggregator do
       end
 
     list =
-      case map_size(merged_map) == 4 do
+      case map_size(merged_map) == 5 do
         true ->
           list ++ [merged_map]
 
