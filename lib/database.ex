@@ -9,6 +9,8 @@ defmodule Database do
   def init(_arg) do
     :ets.new(:users, [:ordered_set, :protected, :named_table])
     :ets.new(:tweets, [:ordered_set, :protected, :named_table])
+
+    send(Batcher, :database_active)
     {:ok, 0}
   end
 

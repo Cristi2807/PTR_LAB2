@@ -10,7 +10,7 @@ defmodule Batcher do
 
   @impl true
   def init({state, buffer_size}) do
-    {:ok, {state, buffer_size}}
+    {:ok, {state, buffer_size, false}}
   end
 
   def print_state(merged_map) do
@@ -21,13 +21,24 @@ defmodule Batcher do
   end
 
   @impl true
-  def handle_info(:print, {state, buffer_size}) do
+  def handle_info(:database_active, {state, buffer_size, _conn}) do
+    {:noreply, {state, buffer_size, true}}
+  end
+
+  @impl true
+  def handle_info(:print, {state, buffer_size, db_conn}) do
     # IO.puts(length(state))
 
     state =
-      case length(state) > 0 do
+      case length(state) > 0 && db_conn == true do
         true ->
-          GenServer.call(Database, {:save, Enum.at(state, 0)})
+          try do
+            GenServer.call(Database, {:save, Enum.at(state, 0)})
+          catch
+            :timeout ->
+              IO.puts("Request timed out!")
+          end
+
           Enum.drop(state, 1)
 
         false ->
@@ -36,11 +47,11 @@ defmodule Batcher do
 
     send(self(), :print)
 
-    {:noreply, {state, buffer_size}}
+    {:noreply, {state, buffer_size, db_conn}}
   end
 
   @impl true
-  def handle_info(:stop, {state, buffer_size}) do
+  def handle_info(:stop, {state, buffer_size, db_conn}) do
     case length(state) > buffer_size / 2 do
       true ->
         send(self(), :stop)
@@ -50,11 +61,11 @@ defmodule Batcher do
         # IO.puts("\e[38;5;46m Buffer size less than half Buffer_size. READY TO RECEIVE \e[0m")
     end
 
-    {:noreply, {state, buffer_size}}
+    {:noreply, {state, buffer_size, db_conn}}
   end
 
   @impl true
-  def handle_info({:send, map}, {state, buffer_size}) do
+  def handle_info({:send, map}, {state, buffer_size, db_conn}) do
     state = state ++ [map]
 
     case length(state) == buffer_size do
@@ -68,6 +79,6 @@ defmodule Batcher do
         nil
     end
 
-    {:noreply, {state, buffer_size}}
+    {:noreply, {state, buffer_size, db_conn}}
   end
 end

@@ -8,8 +8,8 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      {Database, []},
       {Batcher, [[], 100]},
+      {Database, []},
       {Aggregator, []},
       %{
         id: :redactorPool,
